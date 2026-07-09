@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.1.1 — 2026-07-09
+
+### Fixed
+
+- `PlansTable` no longer requires the host `Plan` model to implement `formattedPrice()`. The package now formats decimal plan prices itself, while still honoring custom models that provide their own `formattedPrice()` method.
+- `MoneyField` and `CurrencyField` no longer depend on an unreleased `crumbls/subscriptions` currency service, keeping plan create/edit forms compatible with `crumbls/subscriptions` 2.x releases.
+
 ## v2.1.0 — 2026-04-29
 
 ### Added

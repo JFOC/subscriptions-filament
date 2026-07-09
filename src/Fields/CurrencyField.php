@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Crumbls\SubscriptionsFilament\Fields;
 
-use Crumbls\Subscriptions\Services\CurrencyService;
+use Crumbls\SubscriptionsFilament\Support\CurrencyFormatter;
 use Filament\Forms\Components\Select;
 
 class CurrencyField extends Select
@@ -17,7 +17,7 @@ class CurrencyField extends Select
             ->searchable()
             ->native(false)
             ->options(fn (): array => array_column(
-                app(CurrencyService::class)->getCurrencies(),
+                app(CurrencyFormatter::class)->getCurrencies(),
                 'label',
                 'code',
             ));

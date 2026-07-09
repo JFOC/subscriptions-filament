@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crumbls\SubscriptionsFilament\Resources\PlanResource\Tables;
 
+use Crumbls\SubscriptionsFilament\Support\CurrencyFormatter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -30,7 +31,7 @@ class PlansTable
 
                 TextColumn::make('price')
                     ->label(__('subscriptions-filament::subscriptions-filament.plan.columns.price'))
-                    ->formatStateUsing(fn ($record): string => $record->formattedPrice())
+                    ->formatStateUsing(fn (object $record): string => self::formatPrice($record))
                     ->sortable(),
 
                 TextColumn::make('invoice_interval')
@@ -73,5 +74,14 @@ class PlansTable
                 ]),
             ])
             ->defaultSort('sort_order');
+    }
+
+    protected static function formatPrice(object $record): string
+    {
+        if (method_exists($record, 'formattedPrice')) {
+            return $record->formattedPrice();
+        }
+
+        return app(CurrencyFormatter::class)->format($record->price, $record->currency);
     }
 }

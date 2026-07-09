@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Crumbls\SubscriptionsFilament\Fields;
 
 use Closure;
-use Crumbls\Subscriptions\Services\CurrencyService;
+use Crumbls\SubscriptionsFilament\Support\CurrencyFormatter;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 
@@ -44,10 +44,10 @@ class MoneyField extends TextInput
             ->prefix(fn (Get $get): string => $this->service()->symbol($this->resolveCurrency($get)))
             ->step(fn (Get $get): float|int => $this->service()->step($this->resolveCurrency($get)))
             ->formatStateUsing(
-                fn ($state, Get $get): string => $this->service()->fromMinor($state, $this->resolveCurrency($get)),
+                fn ($state, Get $get): string => $this->service()->normalizeDecimal($state, $this->resolveCurrency($get)),
             )
             ->dehydrateStateUsing(
-                fn ($state, Get $get): int => $this->service()->toMinor($state, $this->resolveCurrency($get)),
+                fn ($state, Get $get): string => $this->service()->normalizeDecimal($state, $this->resolveCurrency($get)),
             );
     }
 
@@ -58,8 +58,8 @@ class MoneyField extends TextInput
         return is_string($value) && $value !== '' ? strtoupper($value) : $this->defaultCurrency;
     }
 
-    protected function service(): CurrencyService
+    protected function service(): CurrencyFormatter
     {
-        return app(CurrencyService::class);
+        return app(CurrencyFormatter::class);
     }
 }
